@@ -181,8 +181,9 @@ start a new one.
 
 | Action | Input |
 |---|---|
-| Pause / unpause | hold **crouch + melee** together for ~0.3s |
-| Vote yes, while a vote is open | the same combo |
+| Pause | hold **crouch + melee** together for ~0.3s |
+| Unpause | hold **use + aim** — the pause banner names it |
+| Vote yes, while a vote is open | the combo for pausing or unpausing, whichever the vote is about |
 | Vote no, while a vote is open | hold **jump + melee** |
 
 Crouching *or* prone counts, by any binding — Black Ops 1 splits crouch across four
@@ -193,9 +194,15 @@ The combo keeps working while you're frozen: `freezecontrols()` blocks movement 
 weapon use, but button state still reaches the server. That's what lets a frozen player
 resume.
 
-**There are no chat commands.** Black Ops 1 has no `say` callback for a script to bind to,
-so unlike the Black Ops II version there's no `!pause` or `!yes`. Everything is on the
-combos, which is why the down-state combos below matter.
+**Resuming is use + aim, not the crouch combo.** Black Ops reads crouch as the stance you're
+*in*, and freezing a player freezes their stance with them, so nobody paused standing
+could ever crouch to resume. While players are held, everyone is on the downed combo,
+`zp_combo_dead`, which is buttons only.
+
+**The chat commands work here too.** Type `!pause` or `!p` to pause, `!unpause` or
+`!resume` to resume, and `yes` / `no` while a vote is open. `zp_allow_short_words` widens
+them to the bare words. The combos matter all the same: a downed player's buttons change,
+and chat is not always at hand.
 
 ### While you're down
 
@@ -209,6 +216,29 @@ those buttons at all. Downed and spectating players switch to:
 
 The HUD shows a `while down:` line whenever anybody is in that state, so nobody has to
 remember it.
+
+### The settings menu
+
+While the game is paused, the host can change ZPause's settings without the console. Hold
+**fire + melee** to open the menu:
+
+| Button | Does |
+|---|---|
+| aim / fire | move up and down the list |
+| grenade | change the setting |
+| melee | close |
+
+A switch flips, a list moves on to its next choice, and a number steps up through a few
+common values and back round to the lowest — exact values are still the console's. A
+change lands when play resumes, the same as one typed into the console, and is saved as the
+menu closes — see [Where settings are saved](#where-settings-are-saved). The menu closes
+itself when a vote opens, since the host needs the buttons back to vote. `zp_menu 0` turns
+it off.
+
+**There is no settings menu in the lobby on Black Ops.** Black Ops II and Black Ops III
+draw their lobbies in Lua, which is what their lobby menus are built from, and Black Ops
+has no Lua to build one in. The pause menu, the installer and the console all reach the
+same saved settings.
 
 ---
 
@@ -296,13 +326,32 @@ a pause to take effect, and the combo is what asks for one.
 `set zp_config_print 1` in the console prints every setting below with the value it is
 currently holding, then puts the switch back so it can be used again.
 
+### Where settings are saved
+
+Whatever you change in the pause menu is written to a file as you close the menu, and read
+back the next time a match loads:
+
+```
+Plutonium\storage\t5\raw\scriptdata\zpause.cfg
+```
+
+The installer's config editor writes that same file, in the same format, so it does not
+matter where you set something — the menu, the installer, a text editor, or `exec` on a
+dedicated server. Only settings that differ from their default are listed, which is what
+keeps a default that changes in a later version applying to everything you never touched.
+
+The file supplies the **default** for each setting, so anything you set in the console
+outranks it for as long as the game is running.
+
 | Dvar | Default | What it does |
 |---|---|---|
-| `zp_host_only` | `0` | Only the host can pause or resume. Everyone else's combo is ignored, and a pause never goes to a vote. On a dedicated server there is no host, so it falls to whoever holds the first player slot. |
+| `zp_menu` | `1` | Let the host change settings from a menu while the game is paused: hold fire and melee to open it. |
+| `zp_host_only` | `0` | Only the host can pause or resume. Everyone else's chat command and combo are ignored, and a pause never goes to a vote. On a dedicated server there is no host, so it falls to whoever holds the first player slot. |
+| `zp_allow_short_words` | `0` | Also accept bare `p` / `u` / `pause` in chat. Off by default so normal conversation can't pause the game. |
 | `zp_button_combo` | `1` | Enable the button combos. |
 | `zp_combo` | `crouch_melee` | Pause combo: `crouch_melee`, `jump_use`, `jump_melee`, `use_melee`, `ads_melee`, `ads_use`, `throw_use`. |
 | `zp_button_hold_time` | `0.3` | How long a combo must be held. |
-| `zp_combo_dead` | `use_ads` | Combo used while downed or spectating. `""` = no button in that state. |
+| `zp_combo_dead` | `use_ads` | Combo used while downed or spectating. `none` = chat only. |
 | `zp_vote_no_combo_dead` | `use_attack` | The same, for a no vote. |
 | `zp_host_approve` | `0` | The host pauses at once; anyone else has to ask and the host answers yes or no. It runs as a vote only the host can cast, so the yes/no input, the HUD and the timeout are a vote's. Pausing only — resuming still follows `zp_vote`. `zp_host_only` wins where both are set. |
 | `zp_ready_check` | `0` | Resuming waits for the players to say they're back. Not a vote — nobody says no and it can't fail, so it needs no `zp_vote`, and it wins over `zp_vote_unpause` where both are set. |
@@ -332,6 +381,7 @@ currently holding, then puts the switch back so it can be used again.
 | `zp_drift_guard` | `1` | Snap back any AI that still manages to move. |
 | `zp_stop_anims` | `1` | Cut scripted animations, so zombies can't finish tearing a barrier through the pause. |
 | `zp_godmode` | `1` | Make players invulnerable while paused. |
+| `zp_freeze_players` | `1` | Lock players in place while paused. `0` lets them walk around with their weapons down, locked again for the countdown — not recommended, because doors, the box, perks, traps and pickups can all still be used while the zombies are held. |
 | `zp_control_guard` | `1` | Re-apply the player freeze every tick. |
 | `zp_freeze_bleedout` | `1` | Stop downed players bleeding out. |
 | `zp_freeze_powerups` | `1` | Stop ground powerups timing out. |
@@ -351,7 +401,7 @@ currently holding, then puts the switch back so it can be used again.
 | `zp_blackout_alpha` | `0.2` | How far it dims. `0.2` is a light darkening; `1` is fully black. |
 | `zp_blur` | `1` | Blur everyone's screen while paused. |
 | `zp_blur_amount` | `2` | Blur strength. `4` is the blur the game runs when you buy a perk. |
-| `zp_pause_sound` | `zmb_box_poof` | Played when the game is paused. `""` = silent. |
+| `zp_pause_sound` | `zmb_box_poof` | Played when the game is paused. `none` = silent. |
 | `zp_countdown_sound` | `zmb_bolt` | Played on each countdown tick. |
 | `zp_resume_sound` | `zmb_perks_power_on` | Played when play resumes. |
 
@@ -453,6 +503,63 @@ say yes to the merge, and delete the game folders you don't have.
 
 ## Changelog
 
+### v1.5
+
+- **Settings you change in the pause menu now stick.** They go into
+  `scriptdata\zpause.cfg` as the menu closes and are read back as the next match loads —
+  the same file the installer's config editor writes, so the menu, the installer, the
+  console and the file are all one set of settings. See
+  [Where settings are saved](#where-settings-are-saved).
+
+- **The chat commands work here.** `!pause`, `!p`, `!unpause`, `!resume`, and `yes` / `no`
+  while a vote is open — the same words as on Black Ops II. This port shipped without them
+  because nothing in Black Ops' own scripts listens for chat, and that turned out to prove
+  nothing: the game raises it anyway. New `zp_allow_short_words` widens them to the bare
+  words, off by default. The pause banner names `!unpause` beside the combo now, and the
+  `while down:` line offers `!yes` / `!no` wherever a down combo is set to `none` — the
+  same HUD the Black Ops II build has always drawn.
+
+- **Anybody can unpause again, not only whoever paused.** Black Ops has no
+  `stancebuttonpressed()`, so the crouch half of a combo reads the stance a player is
+  *in* — and freezing a player locks their stance along with their movement. Whoever
+  paused was crouched by definition and stayed crouched; everybody else was frozen
+  standing and could never make the combo. While players are held they are all on the
+  fallback combo, `zp_combo_dead` — `use` + `aim` by default, buttons only — and the
+  pause banner names it.
+
+- **`use_ads` and `use_attack` do what they say now.** Both are offered in the settings
+  menu and both are defaults — `zp_combo_dead` and `zp_vote_no_combo_dead` — but neither
+  name was ever tested for, so both fell through to crouch + melee. A downed player's
+  fallback was the one combo being downed stops you making.
+
+- **Black Ops no longer stops at boot with ZPause installed.** v1.4 called two of the
+  game's zombies functions by name, and Black Ops has to find a function called that way as
+  it boots, before any zombies script is loaded. ZPause looks them up once a match is
+  running now, the way it always reached the powerups.
+
+- **`zp_freeze_players`** — set it to `0` and players can walk around a paused game with
+  their weapons down, and are locked again for the countdown back in. Players are still
+  locked by default, and roaming isn't recommended: doors, the box, perks, traps and
+  pickups can all still be used while the zombies are held.
+
+- **A settings menu for the host.** While the game is paused, hold **fire + melee** to
+  change ZPause's settings without the console: aim and fire move through the list,
+  grenade changes the setting, melee closes it. See
+  [The settings menu](#the-settings-menu); `zp_menu` turns it off.
+
+- **`none` empties a setting from the console.** `set zp_pause_sound ""` was put back to
+  its default the next time the config was read, so a silent sound or a downed combo with
+  no button only ever worked from the installer. `none` does it from the console, a config
+  file or the settings menu.
+
+- **Changing `zp_godmode` during a pause** no longer leaves the players invulnerable once
+  it ends. Resuming undoes what the pause did, rather than what the setting says by then.
+
+- **The installer's `-To` works when it already remembers a folder.** It was only read when
+  the installer had to ask where the game is, so once it remembered one, `-To` was ignored.
+  It comes first now, for that run, and a `-To` that is not the game's folder says so. On
+  Linux, the question itself now shows when more than one Plutonium folder is found, or none.
+
 ### v1.4
 
 - **A zombie paused on its way to a window now finishes the walk.** Before, resuming sent
@@ -489,7 +596,7 @@ say yes to the merge, and delete the game folders you don't have.
 
 - **`zp_host_approve`** — the host pauses at once; anyone else has to ask, and the host
   answers yes or no. It runs as a vote with an electorate of one, so it uses the same
-  yes/no input and the same clock, and works where there is no chat. Pausing only, so
+  yes/no input and the same clock, on the combos or in chat. Pausing only, so
   nobody is stranded if the host walks away. Off by default.
 
 - **`zp_config_print`** — `set zp_config_print 1` in the console prints every setting and
@@ -527,8 +634,7 @@ say yes to the merge, and delete the game folders you don't have.
 First release. Feature equal to ZPause v1.3 for Black Ops II, except where the engine
 doesn't allow it:
 
-- **No chat commands** — Black Ops 1 has no `say` callback, so everything is on the button
-  combos.
+- **No chat commands** — everything is on the button combos. They arrived in v1.5.
 - **No match clock hold** — Black Ops 1 zombies has no match timer.
 - **The pause clock is minute-granular** rather than live mm:ss, for the configstring
   reason above.
