@@ -1,6 +1,6 @@
 /*
 ======================================================================
-    ZPAUSE T5 v1.6  --  Synced co-op pause for Black Ops Zombies
+    ZPAUSE T5 v1.7  --  Synced co-op pause for Black Ops Zombies
     Plutonium T5
 
     by Xep
@@ -820,8 +820,7 @@ zp_cfg_float( dvar, def )
     Nothing in the stock dump listens for it, and nothing in Plutonium's
     own scripts does either, which is why this port shipped documented as
     button-only. That was reasoning from absence: the notify fires anyway,
-    and was seen doing it on 15 September 2026. See
-    docs/handoff-chat-commands.md.
+    and was seen doing it on 15 September 2026.
    ================================================================== */
 
 zp_chat_listener()
@@ -5240,7 +5239,7 @@ zp_api_request( player, what )
 zp_version()
 {
     // ZP_VERSION_BEGIN
-    return "1.6";
+    return "1.7";
     // ZP_VERSION_END
 }
 

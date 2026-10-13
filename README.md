@@ -4,7 +4,9 @@
 
 by Xep
 
-[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/F6L1285ROA)
+[![Support the mod on Ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/F6L1285ROA)
+[![Support the mod on Patreon](https://img.shields.io/badge/Patreon-Xeptix-F96854?logo=patreon&logoColor=white)](https://www.patreon.com/Xeptix)
+[![Join the Discord](https://img.shields.io/badge/Discord-Join-5865F2?logo=discord&logoColor=white)](https://discord.gg/RE85HRwYZZ)
 
 [**Download the latest release**](https://github.com/Xeptix/ZPauseT5/releases/latest)
 
@@ -18,7 +20,7 @@ identical for everyone - there's no per-client state that can desync.
 - Zombies stop where they are, and stop spawning
 - Players are locked and can't be hurt
 - Powerup timers, effect countdowns and bleedout all hold
-- Resumes on a 3‑2‑1 countdown with a short grace period
+- Resumes on a 3-2-1 countdown with a short grace period
 
 ---
 
@@ -399,7 +401,7 @@ outranks it for as long as the game is running.
 | `zp_vote_no_combo` | `jump_melee` | Combo for a no vote. |
 | `zp_ease` | `1` | **No effect on this engine.** See below. |
 | `zp_ease_time` | `0.35` | The same. |
-| `zp_countdown` | `3` | Seconds of 3‑2‑1 before play resumes. |
+| `zp_countdown` | `3` | Seconds of 3-2-1 before play resumes. |
 | `zp_grace` | `2` | Seconds of invulnerability after resuming. |
 | `zp_max_pauses` | `0` | How many times one match can be paused. `0` is no cap. Only a pause somebody asked for spends one - an automatic pause does not. |
 | `zp_pause_on_disconnect` | `0` | Pause when somebody drops, so whoever is left isn't overrun while they rejoin. Nothing un-pauses on its own, so `zp_max_pause_time` is the way out if they don't come back. |
@@ -530,6 +532,12 @@ say yes to the merge, and delete the game folders you don't have.
 ---
 
 ## Changelog
+
+### v1.7
+
+- **No change on this port.** 1.7 translates the settings menus that Black Ops II and Black Ops
+  III draw in Lua, and Black Ops has no Lua menu to translate. The version moves with the others so
+  the same number means the same release everywhere.
 
 ### v1.6
 
