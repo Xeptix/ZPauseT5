@@ -533,6 +533,11 @@ say yes to the merge, and delete the game folders you don't have.
 
 ## Changelog
 
+### v1.8
+
+- **No change on this port.** 1.8 fixes the Black Ops III settings screen's category strip. The
+  version moves with the others so the same number means the same release everywhere.
+
 ### v1.7
 
 - **No change on this port.** 1.7 translates the settings menus that Black Ops II and Black Ops
