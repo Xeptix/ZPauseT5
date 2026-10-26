@@ -1,6 +1,6 @@
 /*
 ======================================================================
-    ZPAUSE T5 v1.8  --  Synced co-op pause for Black Ops Zombies
+    ZPAUSE T5 v1.9  --  Synced co-op pause for Black Ops Zombies
     Plutonium T5
 
     by Xep
@@ -5239,7 +5239,7 @@ zp_api_request( player, what )
 zp_version()
 {
     // ZP_VERSION_BEGIN
-    return "1.8";
+    return "1.9";
     // ZP_VERSION_END
 }
 

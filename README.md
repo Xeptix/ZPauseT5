@@ -533,6 +533,12 @@ say yes to the merge, and delete the game folders you don't have.
 
 ## Changelog
 
+### v1.9
+
+- **No change on this port.** 1.9 fixes Black Ops III's pause menu setting, `zp_pause_menu`, which
+  did nothing in a co-op game. The version moves with the others so the same number means the same
+  release everywhere.
+
 ### v1.8
 
 - **No change on this port.** 1.8 fixes the Black Ops III settings screen's category strip. The
